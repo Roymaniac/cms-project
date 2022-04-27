@@ -86,7 +86,7 @@ class CategoryService
     }
 
     /**
-     * Deletes the article category associated with `$id`
+     * Deletes the post category associated with `$id`
      * @param  string $id
      * @return int
      */
