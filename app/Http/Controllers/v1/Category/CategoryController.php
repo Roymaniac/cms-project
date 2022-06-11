@@ -7,6 +7,7 @@ use App\Helpers\ApiConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Services\CategoryServices\CategoryService;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -27,14 +28,27 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            return $this->postCategory->listPostCategories();
+            $categories = $this->postCategory->listPostCategories();
+            return view('categories.index', ['categories' => $categories, 'categories' => DB::table('categories')->paginate(10)]);
         } catch (\Exception $e) {
             $message = 'Something went wrong while processing your request.';
             return problemResponse($message, ApiConstants::SERVER_ERR_CODE, $request, $e);
         }
     }
 
-    
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+
+        return view('categories.create');
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -85,4 +99,9 @@ class CategoryController extends Controller
         }
     }
 
+
+    public function dashboard()
+    {
+        return view('dashboard');
+    }
 }

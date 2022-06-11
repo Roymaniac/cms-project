@@ -20,29 +20,31 @@ use App\Http\Controllers\v1\Category\CategoryController;
 */
 
 
-//Authentication Routes
-Route::post('/register', [RegisterController::class, 'register']);
-Route::post('/login', [LoginController::class, 'login']);
-
-
-Route::group(['prefix' => 'v1'], function() {
-    Route::group(['middleware' => 'api'], function() {
-        Route::post('/logout', [LogoutController::class, 'logout']);
+Route::group(['prefix' => 'v1'], function () {
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
         Route::post('/profile', [LoginController::class, 'profile']);
     });
-    
+    //Authentication Routes
+    Route::post('/register', [RegisterController::class, 'register'])->name('register');
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+    Route::get('/dashboard', [CategoryController::class, 'dashboard'])->name('dashboard');
+
     // Post Categories API Routes
     Route::group(['prefix' => 'categories'], function () {
-        Route::get('/index', [CategoryController::class, 'index'])->middleware('api');
-        Route::post('/create', [CategoryController::class, 'store'])->middleware('auth:api');
+        Route::get('/index', [CategoryController::class, 'index'])->name('categories.index')->middleware('auth:api');
+        Route::get('/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/store', [CategoryController::class, 'store'])->middleware('auth:api');
         Route::put('/{id}', [CategoryController::class, 'update'])->middleware('auth:api');
         Route::delete('/{id}', [CategoryController::class, 'destroy'])->middleware('auth:api');
     });
 
     // Post API Routes
     Route::group(['prefix' => 'posts'], function () {
-        Route::get('/index', [PostController::class, 'index'])->middleware('auth:api');
-        Route::post('/create', [PostController::class, 'store'])->middleware('auth:api');
+        Route::get('/index', [PostController::class, 'index'])->name('post.index')->middleware('auth:api');
+        Route::get('/create', [PostController::class, 'create'])->name('post.create');
+        Route::post('/store', [PostController::class, 'store'])->name('post.store'); //->middleware('auth:api');
         Route::put('/{id}', [PostController::class, 'update'])->middleware('auth:api');
         Route::delete('/{id}', [PostController::class, 'destroy'])->middleware('auth:api');
     });

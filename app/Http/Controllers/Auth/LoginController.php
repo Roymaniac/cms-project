@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\Helpers\ApiConstants;
 use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
@@ -13,6 +15,17 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    }
+
+
+    /**
+     * Display login view.
+     *
+     * @return \Illuminste\View\View
+     */
+    public function create()
+    {
+        return view('auth.login');
     }
 
     /**
@@ -32,9 +45,9 @@ class LoginController extends Controller
         }
 
         if (!$token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], ApiConstants::AUTH_ERR_CODE);
+            return response()->json(['errors' => 'Unauthorized'], ApiConstants::AUTH_ERR_CODE);
         }
-      
+
         $message = "Login Successful";
         $data = [
             "user" => auth()->user(),
@@ -43,7 +56,9 @@ class LoginController extends Controller
             'expires_in' => config('jwt.ttl')
         ];
 
-        return validResponse($message, $data);
+        $data;
+        return redirect()->intended(RouteServiceProvider::HOME);
+        // return validResponse($message, $data);
     }
 
     /**
@@ -55,7 +70,7 @@ class LoginController extends Controller
     {
         $message = "User Profile Fetched";
         $data = auth()->user();
-        
+
         return validResponse($message, $data);
     }
 }

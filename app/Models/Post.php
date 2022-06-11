@@ -40,16 +40,16 @@ class Post extends Model
     /**
     * Get the user that owns the post..
     */
-    public function posts()
-    {
-        return $this->belongsTo(User::class);
-    }
+    // public function post()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
-    /**
-    * Get the category that belong to the post.
-    */
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
+    // /**
+    // * Get the category that belong to the post.
+    // */
+    // public function categories()
+    // {
+    //     return $this->belongsTo(Category::class, 'category_id');
+    // }
 }

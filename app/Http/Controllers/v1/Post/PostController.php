@@ -7,10 +7,11 @@ use App\Helpers\ApiConstants;
 use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
 use App\Services\PostServices\PostService;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    
+
     //
     protected $post;
 
@@ -20,7 +21,7 @@ class PostController extends Controller
     }
 
 
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -28,14 +29,26 @@ class PostController extends Controller
     public function index(Request $request)
     {
         try {
-            return $this->post->listPost();
+            $post = $this->post->listPost();
+            return view('post.index', ['posts' => $post, 'posts' => DB::table('posts')->paginate(10)]);
         } catch (\Exception $e) {
             $message = 'Something went wrong while processing your request.';
             return problemResponse($message, ApiConstants::SERVER_ERR_CODE, $request, $e);
         }
     }
 
-    
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+
+        return view('post.create');
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -45,7 +58,8 @@ class PostController extends Controller
     public function store(PostRequest $request)
     {
         try {
-            return $this->post->storePost($request);
+            $data = $this->post->storePost($request);
+            return back()->route('post.index');
         } catch (\Exception $e) {
             $message = 'Something went wrong while processing your request.';
             return problemResponse($message, ApiConstants::SERVER_ERR_CODE, $request, $e);
@@ -53,7 +67,7 @@ class PostController extends Controller
     }
 
 
-     /**
+    /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\PostRequest  $request
@@ -62,9 +76,9 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, $id)
     {
-        try{
+        try {
             return $this->post->editPost($request, $id);
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
             $message = 'Something went wrong while processing your request.';
             return problemResponse($message, ApiConstants::SERVER_ERR_CODE, $request, $e);
         }
@@ -85,5 +99,4 @@ class PostController extends Controller
             return problemResponse($message, ApiConstants::SERVER_ERR_CODE, $request, $e);
         }
     }
-
 }

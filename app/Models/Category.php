@@ -32,11 +32,11 @@ class Category extends Model
     ];
 
 
-    /**
-    * Get the posts the user has added.
-    */
-    public function posts()
-    {
-        return $this->hasMany(Post::class);
-    }
+    // /**
+    // * Get the posts the user has added.
+    // */
+    // public function post()
+    // {
+    //     return $this->hasMany(Post::class);
+    // }
 }
